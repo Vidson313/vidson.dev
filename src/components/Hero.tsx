@@ -89,20 +89,34 @@ export default function Hero({ onOpenCvModal, onViewWorkClick }: HeroProps) {
         </div>
       </div>
 
-      {/* Bottom Scroll Indicator */}
-      <div className="mt-12 flex items-center justify-between text-xs font-mono-code text-white/40">
-        <div className="flex items-center gap-2">
-          <span className="text-[#FF5C00]">00 //</span>
-          <span>SYSTEM_READY</span>
+      {/* Bottom Scroll Indicator & Discovery Section */}
+      <div className="mt-12 pt-6 border-t border-white/[0.05] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono-code text-white/40">
+        <div className="flex items-center gap-3">
+          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#141414] border border-white/[0.08] text-[#FF5C00]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF5C00] animate-ping" />
+            <span className="font-semibold">00 //</span>
+            <span className="text-white/70">SYSTEM_READY</span>
+          </span>
+          <span className="hidden md:inline-block text-white/30">•</span>
+          <span className="hidden md:inline-block text-white/40">EXPLORE_SELECTED_PROJECTS</span>
         </div>
 
+        {/* Interactive Subtle Scroll Down Indicator */}
         <button
           onClick={onViewWorkClick}
-          className="flex items-center gap-2 text-white/50 hover:text-[#FF5C00] transition-colors cursor-pointer"
-          aria-label="Scroll to selected work"
+          className="group flex items-center gap-3 px-4 py-2 rounded-full bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.08] hover:border-[#FF5C00]/40 text-white/60 hover:text-white transition-all duration-300 cursor-pointer shadow-sm hover:shadow-[#FF5C00]/10"
+          aria-label="Scroll down to selected work projects"
         >
-          <span className="tracking-wider uppercase">Scroll Down</span>
-          <ArrowDown className="w-3.5 h-3.5 animate-bounce text-[#FF5C00]" />
+          {/* Subtle Mouse Wheel Track Animation */}
+          <span className="relative flex items-center justify-center w-4 h-6 rounded-full border border-white/30 group-hover:border-[#FF5C00] transition-colors">
+            <span className="w-1 h-1.5 rounded-full bg-[#FF5C00] animate-[bounce_1.6s_infinite]" />
+          </span>
+
+          <span className="tracking-widest uppercase text-[11px] font-semibold text-white/70 group-hover:text-[#FF5C00] transition-colors">
+            Scroll Down
+          </span>
+
+          <ArrowDown className="w-3.5 h-3.5 text-[#FF5C00] group-hover:translate-y-0.5 transition-transform duration-200" />
         </button>
       </div>
     </section>

@@ -27,9 +27,10 @@ export default function Navbar({ onOpenHireModal }: NavbarProps) {
 
   const navLinks = [
     { label: 'Work', href: '#projects', num: '01' },
-    { label: 'Skills', href: '#skills', num: '02' },
-    { label: 'About', href: '#about', num: '03' },
-    { label: 'Contact', href: '#contact', num: '04' },
+    { label: 'Activity', href: '#github-activity', num: '02' },
+    { label: 'Skills', href: '#skills', num: '03' },
+    { label: 'About', href: '#about', num: '04' },
+    { label: 'Contact', href: '#contact', num: '05' },
   ];
 
   const handleNavClick = (e: MouseEvent<HTMLAnchorElement>, href: string) => {

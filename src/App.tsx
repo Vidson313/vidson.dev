@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Projects from './components/Projects';
+import GitHubActivity from './components/GitHubActivity';
 import SkillsAbout from './components/SkillsAbout';
 import ContactFooter from './components/ContactFooter';
 import CvModal from './components/CvModal';
@@ -54,6 +55,9 @@ export default function App() {
 
         {/* Section 01: Selected Work Portfolio Grid with Case Study Deep-Dives */}
         <Projects />
+
+        {/* Section 01.5: Real-Time GitHub Activity & Live Commit Telemetry (id: vidson313) */}
+        <GitHubActivity />
 
         {/* Section 02: Skills & Experience Two-Column Layout with Career Timeline */}
         <SkillsAbout />

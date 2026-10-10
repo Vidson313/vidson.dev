@@ -272,13 +272,13 @@ export default function ContactFooter({ onShowToast }: ContactFooterProps) {
             </span>
             <div className="grid grid-cols-3 gap-3 font-mono-code text-xs">
               <a
-                href="https://github.com"
+                href="https://github.com/Vidson313"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 rounded bg-[#0A0A0A] border border-white/5 hover:border-[#FF5C00]/50 hover:text-[#FF5C00] transition-colors flex items-center justify-center gap-2 text-white/80"
               >
                 <Github className="w-4 h-4" />
-                <span>GitHub</span>
+                <span>@vidson313</span>
               </a>
 
               <a
