@@ -247,4 +247,7 @@ export const ABOUT_TEXT = {
   location: "San Francisco, CA (UTC-7) / Remote Worldwide",
   email: "mohamadaminseraji1@gmail.com",
   secondaryEmail: "hello@vidson.dev",
+  website: "https://aminseraj.eu.cc/",
+  telegram: "https://t.me/MHMD_DEVVV",
+  github: "https://github.com/Vidson313",
 };

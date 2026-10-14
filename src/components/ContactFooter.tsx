@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { ArrowUpRight, Copy, Check, Github, Linkedin, Twitter, Mail, ArrowUp, Send, Terminal, Clock } from 'lucide-react';
+import { ArrowUpRight, Copy, Check, Github, Linkedin, Twitter, Mail, ArrowUp, Send, Terminal, Clock, Globe } from 'lucide-react';
 import { ABOUT_TEXT } from '../data/portfolioData';
 
 interface ContactFooterProps {
@@ -268,27 +268,37 @@ export default function ContactFooter({ onShowToast }: ContactFooterProps) {
           {/* Social Profiles Grid */}
           <div className="p-6 rounded-lg bg-[#141414] border border-white/[0.08]">
             <span className="block text-xs font-mono-code text-white/40 mb-4 uppercase">
-              Network & Code Repositories
+              Network & Verified Channels
             </span>
-            <div className="grid grid-cols-3 gap-3 font-mono-code text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono-code text-xs">
               <a
                 href="https://github.com/Vidson313"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 rounded bg-[#0A0A0A] border border-white/5 hover:border-[#FF5C00]/50 hover:text-[#FF5C00] transition-colors flex items-center justify-center gap-2 text-white/80"
               >
-                <Github className="w-4 h-4" />
-                <span>@vidson313</span>
+                <Github className="w-4 h-4 text-[#FF5C00]" />
+                <span>GitHub</span>
               </a>
 
               <a
-                href="https://linkedin.com"
+                href="https://t.me/MHMD_DEVVV"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 rounded bg-[#0A0A0A] border border-white/5 hover:border-[#FF5C00]/50 hover:text-[#FF5C00] transition-colors flex items-center justify-center gap-2 text-white/80"
               >
-                <Linkedin className="w-4 h-4" />
-                <span>LinkedIn</span>
+                <Send className="w-4 h-4 text-[#FF5C00]" />
+                <span>Telegram</span>
+              </a>
+
+              <a
+                href="https://aminseraj.eu.cc/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 rounded bg-[#0A0A0A] border border-white/5 hover:border-[#FF5C00]/50 hover:text-[#FF5C00] transition-colors flex items-center justify-center gap-2 text-white/80"
+              >
+                <Globe className="w-4 h-4 text-[#FF5C00]" />
+                <span>Website</span>
               </a>
 
               <a
@@ -297,8 +307,8 @@ export default function ContactFooter({ onShowToast }: ContactFooterProps) {
                 rel="noopener noreferrer"
                 className="p-3 rounded bg-[#0A0A0A] border border-white/5 hover:border-[#FF5C00]/50 hover:text-[#FF5C00] transition-colors flex items-center justify-center gap-2 text-white/80"
               >
-                <Twitter className="w-4 h-4" />
-                <span>X // Twitter</span>
+                <Twitter className="w-4 h-4 text-[#FF5C00]" />
+                <span>X / Twitter</span>
               </a>
             </div>
           </div>
@@ -307,9 +317,21 @@ export default function ContactFooter({ onShowToast }: ContactFooterProps) {
 
       {/* Bottom Sub-Footer */}
       <div className="pt-8 border-t border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono-code text-white/50">
-        <div>
-          <span>© 2025 vidson.dev</span>
-          <span className="mx-2">•</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span>© {new Date().getFullYear()} VIDSON.DEV</span>
+          <span className="text-white/20">•</span>
+          <span>
+            Developed by{' '}
+            <a
+              href="https://github.com/Vidson313"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white hover:text-[#FF5C00] transition-colors underline underline-offset-4 decoration-white/20 hover:decoration-[#FF5C00]"
+            >
+              VIDSON.DEV — Amin Seraj
+            </a>
+          </span>
+          <span className="text-white/20">•</span>
           <span>Senior Full-Stack Architect</span>
         </div>
 
