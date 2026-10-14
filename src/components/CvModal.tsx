@@ -32,8 +32,8 @@ export default function CvModal({ isOpen, onClose, onShowToast }: CvModalProps) 
   };
 
   const handleCopyMarkdown = () => {
-    const md = `# Vidson — Senior Full-Stack Architect
-Email: ${ABOUT_TEXT.email} | Location: ${ABOUT_TEXT.location}
+    const md = `# Amin Seraj (VIDSON.DEV) — Senior Full-Stack Engineer
+Email: ${ABOUT_TEXT.email} | Location: ${ABOUT_TEXT.location} | Website: https://aminseraj.eu.cc/ | Telegram: https://t.me/MHMD_DEVVV | GitHub: https://github.com/Vidson313
 
 ## Summary
 ${ABOUT_TEXT.paragraphs.join('\n\n')}
@@ -104,18 +104,20 @@ ${EXPERIENCES.map((e) => `### ${e.role} — ${e.company} (${e.period})\n${e.desc
           <div className="border-b border-white/10 pb-6">
             <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
               <h1 id="cv-title" className="text-3xl font-grotesk font-bold text-white tracking-tight">
-                Vidson
+                Amin Seraj
               </h1>
               <span className="font-mono-code text-xs text-[#FF5C00]">
-                Senior Full-Stack Architect // 10+ Yrs Exp
+                VIDSON.DEV // Senior Full-Stack Engineer
               </span>
             </div>
             <div className="mt-2 text-xs font-mono-code text-white/60 flex flex-wrap gap-4">
               <span>{ABOUT_TEXT.location}</span>
               <span>•</span>
-              <span className="text-white">{ABOUT_TEXT.email}</span>
+              <a href={`mailto:${ABOUT_TEXT.email}`} className="text-white hover:text-[#FF5C00] transition-colors">{ABOUT_TEXT.email}</a>
               <span>•</span>
-              <span>vidson.dev</span>
+              <a href="https://aminseraj.eu.cc/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#FF5C00] transition-colors">aminseraj.eu.cc</a>
+              <span>•</span>
+              <a href="https://t.me/MHMD_DEVVV" target="_blank" rel="noopener noreferrer" className="text-[#FF5C00] hover:underline">@MHMD_DEVVV</a>
             </div>
           </div>
 
