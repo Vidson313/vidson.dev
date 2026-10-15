@@ -13,7 +13,7 @@ Crafted by **[Amin Seraj (VIDSON.DEV)](https://aminseraj.eu.cc/)**
 [![Motion](https://img.shields.io/badge/Motion-v12-FF5C00?style=for-the-badge&logo=framer&logoColor=white)](https://motion.dev/)
 [![Telegram](https://img.shields.io/badge/Telegram-MHMD__DEVVV-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/MHMD_DEVVV)
 [![License](https://img.shields.io/badge/License-Custom_MIT_Attribution-FF5C00?style=for-the-badge)](./LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/Vidson313/vidson.dev---Senior-Full-Stack-Engineer--new-z-ai?style=for-the-badge&color=FF5C00&logo=github)](https://github.com/Vidson313/vidson.dev---Senior-Full-Stack-Engineer--new-z-ai/stargazers)
+[![GitHub Stars](https://img.shields.io/github/stars/Vidson313/vidson.dev?style=for-the-badge&color=FF5C00&logo=github)](https://github.com/Vidson313/vidson.dev/stargazers)
 [![Followers](https://img.shields.io/github/followers/Vidson313?label=Follow%20%40Vidson313&style=for-the-badge&color=141414&logo=github)](https://github.com/Vidson313)
 [![Live Demo](https://img.shields.io/badge/Live_Demo-aminseraj.eu.cc-FF5C00?style=for-the-badge&logo=googlechrome&logoColor=white)](https://aminseraj.eu.cc/)
 
@@ -108,7 +108,7 @@ vidson-dev-portfolio/
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/Vidson313/vidson.dev---Senior-Full-Stack-Engineer--new-z-ai.git vidson-portfolio
+git clone https://github.com/Vidson313/vidson.dev.git vidson-portfolio
 cd vidson-portfolio
 ```
 
