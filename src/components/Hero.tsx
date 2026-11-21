@@ -33,7 +33,10 @@ export default function Hero({ onOpenCvModal, onViewWorkClick }: HeroProps) {
 
       {/* Main Hero Headline with Staggered Type-In Animation */}
       <div className="max-w-5xl">
-        <StaggeredHeadline />
+        {/* Reserved space container for dynamic text content using CSS min-height to prevent layout shifts */}
+        <div className="min-h-[220px] sm:min-h-[310px] md:min-h-[390px] lg:min-h-[480px] flex flex-col justify-start">
+          <StaggeredHeadline />
+        </div>
 
         {/* Subtitle (~20 words) */}
         <p className="mt-8 max-w-2xl text-lg sm:text-xl text-white/70 font-normal leading-relaxed">

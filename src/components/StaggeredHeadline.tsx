@@ -122,7 +122,7 @@ export default function StaggeredHeadline({
   return (
     <h1
       id={`hero-headline-${uniqueId}`}
-      className={`font-grotesk font-bold tracking-tight text-white uppercase select-none ${className}`}
+      className={`font-grotesk font-bold tracking-tight text-white uppercase select-none min-h-[220px] sm:min-h-[310px] md:min-h-[390px] lg:min-h-[480px] ${className}`}
       aria-label={fullHeadlineText}
     >
       {/* Screen-reader friendly accessible text */}
@@ -135,13 +135,8 @@ export default function StaggeredHeadline({
           {renderStaggeredWords(prefixText, 0, 'text-white')}
         </span>
 
-        {/* Tier 2: Dynamic bracketed phrase container with CSS Grid permanent height-lock
-            All phrases are permanently rendered into the exact same grid cell (col-start-1 row-start-1)
-            with the exact same typography, wrapping, and word spans.
-            The inactive phrases are invisible (visibility: hidden), which guarantees that CSS Grid
-            permanently locks the container height to the tallest phrase across all viewport widths.
-            This completely eliminates all vertical layout shifts (CLS = 0) and prevents any page jumping. */}
-        <span className="block my-2 sm:my-3.5 text-2xl sm:text-4xl md:text-5xl lg:text-[4rem] leading-[1.2] font-mono-code font-bold tracking-normal normal-case text-[#FF5C00]">
+        {/* Tier 2: Dynamic bracketed phrase container with CSS Grid permanent height-lock and reserved min-height */}
+        <span className="block my-2 sm:my-3.5 min-h-[3.6rem] sm:min-h-[5.2rem] md:min-h-[6.8rem] lg:min-h-[8.8rem] text-2xl sm:text-4xl md:text-5xl lg:text-[4rem] leading-[1.2] font-mono-code font-bold tracking-normal normal-case text-[#FF5C00]">
           <span className="grid grid-cols-1 grid-rows-1 items-start w-full">
             {phrases.map((phrase, phraseIdx) => {
               const isActive = phraseIdx === currentPhraseIndex;

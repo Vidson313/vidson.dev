@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   GitCommit, 
   GitBranch, 
@@ -10,12 +10,10 @@ import {
   FolderGit2, 
   CheckCircle2,
   Clock,
-  Flame,
-  Calendar,
-  Layers,
   Sparkles
 } from 'lucide-react';
 import cachedContributions from '../data/githubContributions2026.json';
+import GitHubContributionHeatmap, { type ContributionDay } from './GitHubContributionHeatmap';
 
 interface GitHubProfile {
   login: string;
@@ -48,12 +46,6 @@ interface GitHubRepo {
   stargazers_count: number;
   forks_count: number;
   pushed_at: string;
-}
-
-interface ContributionDay {
-  date: string;
-  count: number;
-  level: number; // 0, 1, 2, 3, 4
 }
 
 // Guaranteed Fallback Snapshot with the EXACT latest real-world events and commits
@@ -231,13 +223,14 @@ export default function GitHubActivity() {
   const [profile, setProfile] = useState<GitHubProfile>(FALLBACK_PROFILE);
   const [activities, setActivities] = useState<GitHubActivityItem[]>(FALLBACK_ACTIVITIES);
   const [repos, setRepos] = useState<GitHubRepo[]>(FALLBACK_REPOS);
-  const [contributions, setContributions] = useState<ContributionDay[]>(
-    cachedContributions?.contributions || []
-  );
-  const [totalContributions, setTotalContributions] = useState<number>(
-    cachedContributions?.total?.['2026'] || 62
-  );
-  const [hoveredDay, setHoveredDay] = useState<ContributionDay | null>(null);
+  const [contributionsByPeriod, setContributionsByPeriod] = useState<Record<string, ContributionDay[]>>({
+    '2026': (cachedContributions?.contributions as ContributionDay[]) || [],
+  });
+  const [totalsByPeriod, setTotalsByPeriod] = useState<Record<string, number>>({
+    '2026': cachedContributions?.total?.['2026'] ?? 135,
+  });
+  const [availablePeriods, setAvailablePeriods] = useState<string[]>(['2026']);
+  const [selectedPeriod, setSelectedPeriod] = useState<string>('2026');
   const [isLoading, setIsLoading] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
   const [activeTab, setActiveTab] = useState<'stream' | 'repos'>('stream');
@@ -261,8 +254,8 @@ export default function GitHubActivity() {
         .then((res) => (res.ok ? res.json() : null))
         .catch(() => null);
 
-      // 4. Fetch Contributions Calendar from public API proxy
-      const contribPromise = fetch('https://github-contributions-api.jogruber.de/v4/Vidson313?y=2026')
+      // 4. Fetch full multi-year Contributions Calendar from public API proxy
+      const contribPromise = fetch('https://github-contributions-api.jogruber.de/v4/Vidson313')
         .then((res) => (res.ok ? res.json() : null))
         .catch(() => null);
 
@@ -285,11 +278,47 @@ export default function GitHubActivity() {
         });
       }
 
-      if (contribData?.contributions) {
-        setContributions(contribData.contributions);
-        if (contribData.total?.['2026']) {
-          setTotalContributions(contribData.total['2026']);
+      if (Array.isArray(contribData?.contributions) && contribData.contributions.length > 0) {
+        const allDays: ContributionDay[] = [...contribData.contributions].sort((a, b) =>
+          a.date.localeCompare(b.date)
+        );
+
+        const byPeriod: Record<string, ContributionDay[]> = {};
+        const totals: Record<string, number> = {};
+
+        // Group calendar years
+        const yearSet = new Set<string>();
+        for (const day of allDays) {
+          const year = day.date.slice(0, 4);
+          yearSet.add(year);
+          if (!byPeriod[year]) byPeriod[year] = [];
+          byPeriod[year].push(day);
         }
+
+        const sortedYears = Array.from(yearSet).sort((a, b) => b.localeCompare(a));
+        for (const year of sortedYears) {
+          totals[year] =
+            typeof contribData.total?.[year] === 'number'
+              ? contribData.total[year]
+              : byPeriod[year].reduce((sum, d) => sum + d.count, 0);
+        }
+
+        // Compute rolling 12-month window ending today (UTC)
+        const todayIso = new Date().toISOString().slice(0, 10);
+        const upToToday = allDays.filter((d) => d.date <= todayIso);
+        const rollingDays = upToToday.slice(-365);
+
+        const nextPeriods: string[] = [];
+        if (rollingDays.length > 0) {
+          byPeriod['last'] = rollingDays;
+          totals['last'] = rollingDays.reduce((sum, d) => sum + d.count, 0);
+          nextPeriods.push('last');
+        }
+        nextPeriods.push(...sortedYears);
+
+        setContributionsByPeriod(byPeriod);
+        setTotalsByPeriod(totals);
+        setAvailablePeriods(nextPeriods);
       }
 
       // Collect unified recent activities
@@ -422,54 +451,8 @@ export default function GitHubActivity() {
     }
   };
 
-  // Split contributions into weeks (columns of 7 days)
-  const weeksData = useMemo(() => {
-    if (!contributions || contributions.length === 0) return [];
-    
-    // Group into 7-day columns
-    const weeks: ContributionDay[][] = [];
-    let currentWeek: ContributionDay[] = [];
-
-    // If Jan 1 is Thursday (4), prepend empty placeholders so Sunday is top
-    const firstDay = new Date(contributions[0].date).getUTCDay();
-    for (let i = 0; i < firstDay; i++) {
-      currentWeek.push({ date: `pad-${i}`, count: 0, level: -1 });
-    }
-
-    for (const day of contributions) {
-      currentWeek.push(day);
-      if (currentWeek.length === 7) {
-        weeks.push(currentWeek);
-        currentWeek = [];
-      }
-    }
-
-    if (currentWeek.length > 0) {
-      weeks.push(currentWeek);
-    }
-
-    return weeks;
-  }, [contributions]);
-
-  // Color mapper for GitHub heat map squares
-  const getLevelColor = (level: number) => {
-    switch (level) {
-      case -1:
-        return 'bg-transparent border-transparent';
-      case 0:
-        return 'bg-[#181818] border-white/[0.04] hover:border-white/20';
-      case 1:
-        return 'bg-[#0e4429] border-[#006d32]/40 hover:border-emerald-400';
-      case 2:
-        return 'bg-[#006d32] border-[#26a641]/50 hover:border-emerald-300';
-      case 3:
-        return 'bg-[#26a641] border-[#39d353]/60 hover:border-white';
-      case 4:
-        return 'bg-[#39d353] border-emerald-200 hover:brightness-125';
-      default:
-        return 'bg-[#181818] border-white/[0.04]';
-    }
-  };
+  const activeContributionTotal =
+    totalsByPeriod[selectedPeriod] ?? totalsByPeriod['2026'] ?? 0;
 
   const getLanguageColor = (lang: string | null) => {
     switch (lang?.toLowerCase()) {
@@ -612,9 +595,11 @@ export default function GitHubActivity() {
               <span className="text-white/40 ml-1.5">Public Repos</span>
             </div>
             <div className="h-4 w-[1px] bg-white/10" />
-            <div>
-              <span className="text-white font-bold">{totalContributions}</span>
-              <span className="text-emerald-400 font-semibold ml-1.5">Contributions (2026)</span>
+            <div className="tabular-nums">
+              <span className="text-white font-bold">{activeContributionTotal}</span>
+              <span className="text-emerald-400 font-semibold ml-1.5">
+                Contributions ({selectedPeriod === 'last' ? '12m' : selectedPeriod})
+              </span>
             </div>
             <div className="h-4 w-[1px] bg-white/10" />
             <div className="flex items-center gap-1.5 text-emerald-400">
@@ -624,79 +609,16 @@ export default function GitHubActivity() {
           </div>
         </div>
 
-        {/* GITHUB CONTRIBUTION HEATMAP MATRIX (مستطیل شدت فعالیت) */}
-        <div className="px-6 py-5 bg-[#0e0e0e] border-b border-white/[0.06]">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-            <div className="flex items-center gap-2 font-mono-code text-xs">
-              <Flame className="w-4 h-4 text-[#FF5C00]" />
-              <span className="font-bold text-white tracking-wider">ANNUAL CONTRIBUTION MATRIX</span>
-              <span className="text-white/40">({totalContributions} contributions in 2026)</span>
-            </div>
-
-            {/* Hover tooltip or legend */}
-            <div className="flex items-center gap-3 font-mono-code text-[11px] text-white/40">
-              {hoveredDay && hoveredDay.level >= 0 ? (
-                <div className="flex items-center gap-2 px-2 py-0.5 rounded bg-[#1a1a1a] border border-white/10 text-white">
-                  <Calendar className="w-3 h-3 text-[#FF5C00]" />
-                  <span>
-                    <strong className="text-emerald-400">{hoveredDay.count} contribution{hoveredDay.count === 1 ? '' : 's'}</strong> on {formatDate(hoveredDay.date)}
-                  </span>
-                </div>
-              ) : (
-                <span>Hover square for date metrics</span>
-              )}
-
-              {/* Heatmap Legend */}
-              <div className="flex items-center gap-1.5 ml-2">
-                <span>Less</span>
-                <span className="w-2.5 h-2.5 rounded-sm bg-[#181818] border border-white/5 inline-block" />
-                <span className="w-2.5 h-2.5 rounded-sm bg-[#0e4429] inline-block" />
-                <span className="w-2.5 h-2.5 rounded-sm bg-[#006d32] inline-block" />
-                <span className="w-2.5 h-2.5 rounded-sm bg-[#26a641] inline-block" />
-                <span className="w-2.5 h-2.5 rounded-sm bg-[#39d353] inline-block" />
-                <span>More</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Scrollable Contribution Grid */}
-          <div className="overflow-x-auto pb-2 scrollbar-thin">
-            <div className="min-w-[780px] flex gap-[3px] py-1">
-              {weeksData.map((week, wIdx) => (
-                <div key={`week-${wIdx}`} className="flex flex-col gap-[3px]">
-                  {week.map((day, dIdx) => (
-                    <button
-                      key={`day-${wIdx}-${dIdx}`}
-                      disabled={day.level < 0}
-                      onMouseEnter={() => day.level >= 0 && setHoveredDay(day)}
-                      onMouseLeave={() => setHoveredDay(null)}
-                      className={`w-[11px] h-[11px] rounded-[2px] border transition-transform duration-100 ${getLevelColor(
-                        day.level
-                      )} ${day.level >= 0 ? 'hover:scale-125' : 'cursor-default'}`}
-                      aria-label={day.level >= 0 ? `${day.count} contributions on ${day.date}` : undefined}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-
-            {/* Months row */}
-            <div className="min-w-[780px] flex justify-between font-mono-code text-[10px] text-white/30 pt-2 px-1">
-              <span>Jan</span>
-              <span>Feb</span>
-              <span>Mar</span>
-              <span>Apr</span>
-              <span>May</span>
-              <span>Jun</span>
-              <span>Jul</span>
-              <span>Aug</span>
-              <span>Sep</span>
-              <span>Oct</span>
-              <span>Nov</span>
-              <span>Dec</span>
-            </div>
-          </div>
-        </div>
+        {/* Dedicated GitHub Contribution Activity Heatmap Component */}
+        <GitHubContributionHeatmap
+          username={profile.login}
+          contributionsByPeriod={contributionsByPeriod}
+          totalsByPeriod={totalsByPeriod}
+          availablePeriods={availablePeriods}
+          selectedPeriod={selectedPeriod}
+          onSelectPeriod={setSelectedPeriod}
+          isLoading={isLoading}
+        />
 
         {/* Dynamic Activity Feed Content Body */}
         <div className="p-6">
